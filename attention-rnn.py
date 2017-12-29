@@ -1,12 +1,12 @@
 import tensorflow
 import numpy
-
+from utils import attention
 class Arnn(object):
     def __init__(self):
-        self
+        self.attention_size = 50
 
-    def alstm_layer(inputs, lengths, state_size, keep_prob=1.0,
-         scope = 'lstm-layer', reuse=False, return_final_state = False):
+    def alstm_layer(self, inputs, lengths, state_size, keep_prob=1.0,
+         scope = 'lstm-layer', reuse=False):
         with tf.variable_scope(scope, reuse=reuse):
             cell = tf.contirb.rnn.DropoutWrapper(
                 tf.contirb.rnn.LSTMCell(
@@ -21,8 +21,15 @@ class Arnn(object):
                 sequence_length=lengths,
                 dtype=tf.float32
             )
-            if return_final_state:
-                return outputs, output_state
-            else:
-                return outputs
+            outputs = attention(outputs, self.attention_size, time_major=False, return_alphas=False):
+            return outputs
+
+
+    def abmf_layer(self, inputs, )
+
+    
+
+
+
+    
     
