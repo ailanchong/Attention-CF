@@ -3,17 +3,22 @@ import numpy
 from tf_utils import alstm_layer
 
 class Abmf(object):
-    def __init__(self, maxseqlen, word_dim, rnnstate_size, attention_size, usr_num, rank_dim, pro_num):
+    def __init__(self, maxseqlen, word_dim, rnnstate_size, attention_size, usr_num, rank_dim, pro_num, word_num):
         """
         rnnstate_size should be equal with rank_dim
         """
-        self.input_seq = tf.placeholder(dtype=tf.float32, shape=[None, maxseqlen, word_dim])
+        self.input_seq = tf.placeholder(dtype=tf.float32, shape=[None, maxseqlen])
         self.input_seqlen = tf.placeholder(dtype=tf.int32, shape=[None, 1])
         self.usr = tf.placeholder(dtype=tf.int32, shape=[None, 1])
         self.pro = tf.placeholder(dtype=tf.int32, shape=[None, 1])
         self.rate = tf.placeholder(dtype=tf.float32, shape=[None, 1])
+
+        with tf.name_scope("embedding_layer"):
+            self.word_matrix = tf.Variable(tf.truncated_normal([word_num+1, word_dim]), name="word_matrix", dtype=tf.float32)
+            self.input_setence = tf.nn.embedding_lookup(self.word_matrix, self.input_seq)
+
         with tf.name_scope("attention_rnn"):
-            rnn_output = alstm_layer(self.input_seq, self.input_seqlen, rnnstate_size, attention_size)
+            rnn_output = alstm_layer(self.input_setence, self.input_seqlen, rnnstate_size, attention_size)
         with tf.name_scope("matrix_factorization"):
             self.usr_matrix = tf.Variable(tf.truncated_normal([usr_num+1, rank_dim]), name="usr_matrix", dtype=tf.float32)
             self.usr_bias = tf.Variable(tf.truncated_normal([usr_num+1]), name="usr_bias", dtype=tf.float32)

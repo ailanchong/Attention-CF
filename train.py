@@ -16,9 +16,10 @@ def generate_batch_data(batch_size, data):
         for sample in data:
             curr_num += 1
             sentence.append(data['sentence'])
+            
             sentenlen.append(data['sentenlen'])
-            usridx.append(data['usridx'])
-            proidx.append(data['proidx'])
+            usridx.append(int(data['usridx']))
+            proidx.append(int(data['proidx']))
             rate.append(data['rate'])
             if curr_num == batch_size:
                 curr_num = 0
@@ -47,7 +48,7 @@ def generate_test_data(data):
 
 def train(batch_size, train_data, test_data):
     test_data = generate_test_data(test_data)
-    abmfer = Abmf(maxseqlen= , word_dim = 50, rnnstate_size = 50, attention_size = 20, usr_num=, rank_dim=50, pro_num= )
+    abmfer = Abmf(maxseqlen=300, word_dim = 200, rnnstate_size = 50, attention_size = 20, usr_num=6040, rank_dim=50, pro_num=3544, word_num=8000)
     optimizer = tf.train.AdamOptimizer(learning_rate=0.005).minimize(abmfer.loss)
     saver = tf.train.Saver()
     step = tf.Variable(trainable=False)
