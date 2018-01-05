@@ -1,6 +1,6 @@
 import tensorflow
 import numpy
-from utils import alstm_layer
+from tf_utils import alstm_layer
 
 class Abmf(object):
     def __init__(self, maxseqlen, word_dim, rnnstate_size, attention_size, usr_num, rank_dim, pro_num):
@@ -8,10 +8,10 @@ class Abmf(object):
         rnnstate_size should be equal with rank_dim
         """
         self.input_seq = tf.placeholder(dtype=tf.float32, shape=[None, maxseqlen, word_dim])
-        self.input_seqlen = tf.placeholder(dtype=tf.int32, shape=[None])
-        self.usr = tf.placeholder(dtype=tf.int32, shape=[None])
-        self.pro = tf.placeholder(dtype=tf.int32, shape=[None])
-        self.rate = tf.placeholder(dtype=tf.float32, shape=[None])
+        self.input_seqlen = tf.placeholder(dtype=tf.int32, shape=[None, 1])
+        self.usr = tf.placeholder(dtype=tf.int32, shape=[None, 1])
+        self.pro = tf.placeholder(dtype=tf.int32, shape=[None, 1])
+        self.rate = tf.placeholder(dtype=tf.float32, shape=[None, 1])
         with tf.name_scope("attention_rnn"):
             rnn_output = alstm_layer(self.input_seq, self.input_seqlen, rnnstate_size, attention_size)
         with tf.name_scope("matrix_factorization"):
@@ -24,7 +24,7 @@ class Abmf(object):
             currusr_bias = tf.nn.embedding_lookup(self.usr_bias, self.usr)
             currpro_matrix = tf.nn.embedding_lookup(self.pro_matrix, self.pro)
             currpro_bias = tf.nn.embedding_lookup(self.pro_bias, self.pro)
-
+            
         with tf.name_scope("predict"):
             currpro_matrix = tf.add(currpro_matrix, rnn_output)
             interaction = tf.reduce_mean(tf.multiply(currpro_matrix, currusr_matrix), 1)
