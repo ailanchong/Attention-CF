@@ -1,5 +1,5 @@
-import tensorflow
-import numpy
+import tensorflow as tf
+import numpy as np
 from tf_utils import alstm_layer
 
 class Abmf(object):
@@ -7,11 +7,11 @@ class Abmf(object):
         """
         rnnstate_size should be equal with rank_dim
         """
-        self.input_seq = tf.placeholder(dtype=tf.float32, shape=[None, maxseqlen])
-        self.input_seqlen = tf.placeholder(dtype=tf.int32, shape=[None, 1])
-        self.usr = tf.placeholder(dtype=tf.int32, shape=[None, 1])
-        self.pro = tf.placeholder(dtype=tf.int32, shape=[None, 1])
-        self.rate = tf.placeholder(dtype=tf.float32, shape=[None, 1])
+        self.input_seq = tf.placeholder(dtype=tf.int32, shape=[None, maxseqlen])
+        self.input_seqlen = tf.placeholder(dtype=tf.int32, shape=[None])
+        self.usr = tf.placeholder(dtype=tf.int32, shape=[None])
+        self.pro = tf.placeholder(dtype=tf.int32, shape=[None])
+        self.rate = tf.placeholder(dtype=tf.float32, shape=[None])
 
         with tf.name_scope("embedding_layer"):
             self.word_matrix = tf.Variable(tf.truncated_normal([word_num+1, word_dim]), name="word_matrix", dtype=tf.float32)

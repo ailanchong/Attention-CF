@@ -1,4 +1,5 @@
-import tensorflow
+import tensorflow as tf
+import numpy as np
 def attention(inputs, attention_size, time_major=False, return_alphas=False):
     """
     Attention mechanism layer which reduces RNN/Bi-RNN outputs with Attention vector.
@@ -77,8 +78,8 @@ def attention(inputs, attention_size, time_major=False, return_alphas=False):
 def alstm_layer(inputs, lengths, state_size, attention_size, keep_prob=1.0,
         scope = 'alstm-layer', reuse=False):
     with tf.variable_scope(scope, reuse=reuse):
-        cell = tf.contirb.rnn.DropoutWrapper(
-            tf.contirb.rnn.LSTMCell(
+        cell = tf.contrib.rnn.DropoutWrapper(
+            tf.contrib.rnn.LSTMCell(
                 state_size,
                 reuse=reuse
             ),
@@ -90,5 +91,5 @@ def alstm_layer(inputs, lengths, state_size, attention_size, keep_prob=1.0,
             sequence_length=lengths,
             dtype=tf.float32
         )
-        outputs = attention(outputs, attention_size, time_major=False, return_alphas=False):
+        outputs = attention(outputs, attention_size, time_major=False, return_alphas=False)
         return outputs
